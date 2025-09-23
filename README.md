@@ -1,5 +1,5 @@
 <p align="center">
-   <img width="350" src="icon.png" alt="" align="center">
+   <img width="300" src="icon.png" alt="" align="center">
 </p>
 <p align="center">
    Yes, it's <code>cut</code> for csv data.
