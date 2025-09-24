@@ -2,7 +2,7 @@
    <img width="300" src="icon.png" alt="" align="center">
 </p>
 <p align="center">
-   Yes, it's <code>cut</code> for csv data.
+   It <code>cuts</code>, <code>duplicates</code> and <code>rearranges</code> fields in a csv file.
 </p>
 
 ## Usage
@@ -41,7 +41,7 @@ Cut and gzip
 cutc -f 1,4,7 < input.csv | gzip -c > output.csv.gz
 ```
 
-Duplicate field 1 and 7 multiple times
+Duplicate fields 1 and 7 multiple times
 
 ```shell
 cutc -f 4,1,1,7,7 < input.csv
