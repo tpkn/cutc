@@ -41,7 +41,7 @@ Cut and gzip
 cutc -f 1,4,7 < input.csv | gzip -c > output.csv.gz
 ```
 
-Duplicate field 1 and 7 multple times
+Duplicate field 1 and 7 multiple times
 
 ```shell
 cutc -f 4,1,1,7,7 < input.csv
