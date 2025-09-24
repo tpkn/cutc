@@ -78,40 +78,41 @@ func Test_Run(t *testing.T) {
 }
 
 func Test_ParseFields(t *testing.T) {
-	_, err := ParseFields("0", 0)
+	_, err := ParseFields("", 10)
 	require.Error(t, err)
 
-	got, err := ParseFields("1", 0)
+	_, err = ParseFields("0", 10)
+	require.Error(t, err)
+
+	_, err = ParseFields("1", 0)
+	require.Error(t, err)
+
+	_, err = ParseFields("a,b,c", 10)
+	require.Error(t, err)
+
+	got, err := ParseFields("1", 10)
 	require.NoError(t, err)
 	require.Equal(t, []int{1}, got)
 
-	got, err = ParseFields("1,1,1", 0)
+	got, err = ParseFields("1,1,1", 10)
 	require.NoError(t, err)
 	require.Equal(t, []int{1, 1, 1}, got)
 
-	got, err = ParseFields("1,2,3", 0)
+	got, err = ParseFields("1,2,3", 10)
 	require.NoError(t, err)
 	require.Equal(t, []int{1, 2, 3}, got)
 
-	got, err = ParseFields("1,2,3,3", 0)
+	got, err = ParseFields("1,2,3,3", 10)
 	require.NoError(t, err)
 	require.Equal(t, []int{1, 2, 3, 3}, got)
 
-	got, err = ParseFields("9,1,5", 0)
+	got, err = ParseFields("9,1,5", 10)
 	require.NoError(t, err)
 	require.Equal(t, []int{9, 1, 5}, got)
 
-	got, err = ParseFields("1,b,c", 0)
+	got, err = ParseFields("1,b,c", 10)
 	require.NoError(t, err)
 	require.Equal(t, []int{1}, got)
-
-	got, err = ParseFields("a,b,c", 0)
-	require.NoError(t, err)
-	require.Equal(t, []int{}, got)
-
-	got, err = ParseFields("", 0)
-	require.NoError(t, err)
-	require.Equal(t, []int{}, got)
 
 	// Ranges ---------------------
 	_, err = ParseFields("6-1", 0)

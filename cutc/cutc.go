@@ -55,17 +55,6 @@ func Run(input io.Reader, output io.Writer, options Args) error {
 			if err != nil {
 				return err
 			}
-
-			// A quick check if all the passed fields indexes to cut are in range
-			for _, f := range fields {
-				if f > fields_len {
-					return fmt.Errorf("there is no field with index %v in the csv data", f)
-				}
-			}
-
-			if len(fields) == 0 {
-				return errors.New("no fields to cut")
-			}
 		}
 
 		var row []string
@@ -102,6 +91,9 @@ func ParseFields(s string, data_length int) ([]int, error) {
 			f, _ := strconv.Atoi(p)
 			if f < 1 {
 				return nil, errors.New("field index can't be less than 1")
+			}
+			if f > data_length {
+				return nil, fmt.Errorf("there is no field with index %v in the csv data", f)
 			}
 			result = append(result, f)
 		}
@@ -146,6 +138,10 @@ func ParseFields(s string, data_length int) ([]int, error) {
 				result = append(result, i)
 			}
 		}
+	}
+
+	if len(result) == 0 {
+		return nil, errors.New("no fields to cut")
 	}
 
 	return result, nil
