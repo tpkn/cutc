@@ -38,12 +38,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	var fields, err = cutc.ParseColumnsIndexes(args.FieldsList)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	err = cutc.Run(os.Stdin, os.Stdout, fields, args)
+	err := cutc.Run(os.Stdin, os.Stdout, args)
 	if err != nil {
 		log.Fatalln(err)
 	}

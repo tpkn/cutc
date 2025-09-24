@@ -5,18 +5,26 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode/utf8"
 )
 
-func Run(input io.Reader, output io.Writer, fields []int, options Args) error {
+func Run(input io.Reader, output io.Writer, options Args) error {
+	var (
+		fields []int
+		err    error
+	)
+
 	var delimiter, _ = utf8.DecodeRuneInString(options.Delimiter)
 
 	// Stdin
-	var is_header = true
-	var csv_fields_len = 0
-	var reader = csv.NewReader(input)
+	var (
+		is_header  = true
+		fields_len = 0
+		reader     = csv.NewReader(input)
+	)
 	reader.Comma = delimiter
 	reader.ReuseRecord = true
 
@@ -39,13 +47,24 @@ func Run(input io.Reader, output io.Writer, fields []int, options Args) error {
 			continue
 		}
 
-		// A quick check if all the passed fields indexes to cut are in range
-		if csv_fields_len == 0 {
-			csv_fields_len = len(line)
+		if fields_len == 0 {
+			fields_len = len(line)
+
+			// Parse fields when got first line of csv data
+			fields, err = ParseFields(options.FieldsList, fields_len)
+			if err != nil {
+				return err
+			}
+
+			// A quick check if all the passed fields indexes to cut are in range
 			for _, f := range fields {
-				if f > csv_fields_len {
+				if f > fields_len {
 					return errors.New(fmt.Sprintf("there is no field with index %v in the csv data", f))
 				}
+			}
+
+			if len(fields) == 0 {
+				return errors.New("no fields to cut")
 			}
 		}
 
@@ -54,7 +73,7 @@ func Run(input io.Reader, output io.Writer, fields []int, options Args) error {
 			row = append(row, line[f-1])
 		}
 
-		err := writer.Write(row)
+		err = writer.Write(row)
 		if err != nil {
 			return err
 		}
@@ -63,33 +82,69 @@ func Run(input io.Reader, output io.Writer, fields []int, options Args) error {
 	return nil
 }
 
-// ParseColumnsIndexes cuts string with fields indexes into a slice
-func ParseColumnsIndexes(s string) ([]int, error) {
+// ParseFields cuts string with regular fields indexes
+func ParseFields(s string, data_length int) ([]int, error) {
 	result := []int{}
-	uniq := map[string]bool{}
+
+	fields_pattern := regexp.MustCompile(`^\d+$`)
+	range_fields_pattern := regexp.MustCompile(`^((\d)?-\d+|\d+-(\d+)?)$`)
+	range_start_pattern := regexp.MustCompile(`^(\d+)-`)
+	range_end_pattern := regexp.MustCompile(`-(\d+)$`)
 
 	parts := strings.Split(strings.ReplaceAll(s, " ", ""), ",")
 	for _, p := range parts {
 		if p == "" {
 			continue
 		}
-		if _, ok := uniq[p]; ok {
-			continue
-		}
-		uniq[p] = false
 
-		f, err := strconv.Atoi(p)
-		if err != nil {
-			return nil, errors.New(fmt.Sprintf("\"%v\" is not a valid field index", p))
+		// Parse regular field (1, 2, 3, ...)
+		if fields_pattern.MatchString(p) {
+			f, _ := strconv.Atoi(p)
+			if f < 1 {
+				return nil, errors.New("field index can't be less than 1")
+			}
+			result = append(result, f)
 		}
-		if f < 1 {
-			return nil, errors.New("field index can't be less than 1")
-		}
-		result = append(result, f)
-	}
 
-	if len(result) == 0 {
-		return nil, errors.New("no fields to cut")
+		// Parse range fields (1-150, 6-, -102)
+		if range_fields_pattern.MatchString(p) {
+			start_index := 0
+			end_index := 0
+
+			// Is valid range?
+			if range_start_pattern.MatchString(p) && range_end_pattern.MatchString(p) {
+				start_index, _ = strconv.Atoi(range_start_pattern.FindStringSubmatch(p)[1])
+				end_index, _ = strconv.Atoi(range_end_pattern.FindStringSubmatch(p)[1])
+			} else if range_start_pattern.MatchString(p) {
+				// Only start index?
+				start_index, _ = strconv.Atoi(range_start_pattern.FindStringSubmatch(p)[1])
+				end_index = data_length
+			} else {
+				// Only end index?
+				start_index = 1
+				end_index, _ = strconv.Atoi(range_end_pattern.FindStringSubmatch(p)[1])
+			}
+
+			if start_index < 1 {
+				return nil, errors.New(fmt.Sprintf("fields range start index can't be less than 1 - %v", p))
+			}
+
+			if end_index > data_length {
+				return nil, errors.New(fmt.Sprintf("fields range end index can't be greater that the total fields length (%v) in the csv - %v", data_length, p))
+			}
+
+			if start_index > end_index {
+				return nil, errors.New(fmt.Sprintf("fields range start index is greater that the end index - %v", p))
+			}
+
+			if start_index == end_index {
+				return []int{start_index}, nil
+			}
+
+			for i := start_index; i <= end_index; i++ {
+				result = append(result, i)
+			}
+		}
 	}
 
 	return result, nil
