@@ -59,7 +59,7 @@ func Run(input io.Reader, output io.Writer, options Args) error {
 			// A quick check if all the passed fields indexes to cut are in range
 			for _, f := range fields {
 				if f > fields_len {
-					return errors.New(fmt.Sprintf("there is no field with index %v in the csv data", f))
+					return fmt.Errorf("there is no field with index %v in the csv data", f)
 				}
 			}
 
@@ -126,15 +126,16 @@ func ParseFields(s string, data_length int) ([]int, error) {
 			}
 
 			if start_index < 1 {
-				return nil, errors.New(fmt.Sprintf("fields range start index can't be less than 1 - %v", p))
+				return nil, fmt.Errorf("fields range start index can't be less than 1 - %v", p)
 			}
 
 			if end_index > data_length {
-				return nil, errors.New(fmt.Sprintf("fields range end index can't be greater that the total fields length (%v) in the csv - %v", data_length, p))
+				return nil, fmt.Errorf("fields range end index can't be greater that the total fields length (%v) in the csv - %v", data_length, p)
 			}
 
 			if start_index > end_index {
-				return nil, errors.New(fmt.Sprintf("fields range start index is greater that the end index - %v", p))
+				// return nil, errors.New(fmt.Sprintf("fields range start index is greater that the end index - %v", p))
+				return nil, fmt.Errorf("fields range start index is greater that the end index - %v", p)
 			}
 
 			if start_index == end_index {
