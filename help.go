@@ -1,6 +1,14 @@
 package main
 
-const Help = `cutc (v%v) | https://tpkn.me
+const Help = `                            /▒▒
+                           | ▒▒
+  /▒▒▒▒▒▒▒     /▒▒   /▒▒  /▒▒▒▒▒▒       /▒▒▒▒▒▒▒
+ /▒▒_____/    | ▒▒  | ▒▒ |_  ▒▒_/      /▒▒_____/
+| ▒▒          | ▒▒  | ▒▒   | ▒▒       | ▒▒
+| ▒▒          | ▒▒  | ▒▒   | ▒▒ /▒▒   | ▒▒
+|  ▒▒▒▒▒▒▒ /▒▒|  ▒▒▒▒▒▒//▒▒|  ▒▒▒▒//▒▒|  ▒▒▒▒▒▒▒ v%v
+ \_______/| ▒/ \______/| ▒/ \___/ | ▒/ \_______/ https://tpkn.me
+          |_/          |_/        |_/
 
 It cuts, duplicates and rearranges fields in a csv file.
 
