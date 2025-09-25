@@ -21,7 +21,7 @@ cutc [ -options ] < <file.csv>
 --version          Version
 ```
 
-## Exmples
+## Examples
 
 Cut columns 1 and 4
 
