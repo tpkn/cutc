@@ -123,7 +123,6 @@ func ParseFields(s string, data_length int) ([]int, error) {
 			}
 
 			if start_index > end_index {
-				// return nil, errors.New(fmt.Sprintf("fields range start index is greater that the end index - %v", p))
 				return nil, fmt.Errorf("fields range start index is greater that the end index - %v", p)
 			}
 
