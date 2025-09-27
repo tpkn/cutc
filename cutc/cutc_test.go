@@ -153,7 +153,12 @@ func Test_ParseFields(t *testing.T) {
 	require.Equal(t, []int{1}, got)
 
 	// Mixed ---------------------
+	got, err = ParseFields("1, 2, 3-3, 4", 100)
+	require.NoError(t, err)
+	require.Equal(t, []int{1, 2, 3, 4}, got)
+
 	got, err = ParseFields("1, 2, 3, 62-64, -5, 99-, 95", 100)
 	require.NoError(t, err)
 	require.Equal(t, []int{1, 2, 3, 62, 63, 64, 1, 2, 3, 4, 5, 99, 100, 95}, got)
+
 }

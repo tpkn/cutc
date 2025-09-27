@@ -131,7 +131,8 @@ func ParseFields(s string, data_length int) ([]int, error) {
 			}
 
 			if start_index == end_index {
-				return []int{start_index}, nil
+				result = append(result, start_index)
+				continue
 			}
 
 			for i := start_index; i <= end_index; i++ {
