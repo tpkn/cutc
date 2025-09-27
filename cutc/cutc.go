@@ -13,17 +13,15 @@ import (
 
 func Run(input io.Reader, output io.Writer, options Args) error {
 	var (
-		fields []int
-		err    error
+		delimiter, _ = utf8.DecodeRuneInString(options.Delimiter)
+		fields       []int
+		err          error
 	)
-
-	var delimiter, _ = utf8.DecodeRuneInString(options.Delimiter)
 
 	// Stdin
 	var (
-		is_header  = true
-		fields_len = 0
-		reader     = csv.NewReader(input)
+		is_header = true
+		reader    = csv.NewReader(input)
 	)
 	reader.Comma = delimiter
 	reader.ReuseRecord = true
@@ -42,18 +40,17 @@ func Run(input io.Reader, output io.Writer, options Args) error {
 			continue
 		}
 
-		if options.SkipHeader && is_header {
-			is_header = false
-			continue
-		}
-
-		if fields_len == 0 {
-			fields_len = len(line)
-
-			// Parse fields when got first line of csv data
-			fields, err = ParseFields(options.FieldsList, fields_len)
+		if is_header {
+			// Parse fields when got first line of data
+			fields, err = ParseFields(options.FieldsList, len(line))
 			if err != nil {
 				return err
+			}
+
+			is_header = false
+
+			if options.SkipHeader {
+				continue
 			}
 		}
 

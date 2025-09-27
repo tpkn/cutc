@@ -16,7 +16,7 @@ Usage:
   cutc [ -options ] < <file.csv>
 
 Options:
-  -d, --delimiter    Fields delimiter
+  -d, --delimiter    Fields delimiter (default: comma)
   -f, --fields       Fields indexes to cut (starting from 1; could be a ranges; order matters)
   -h, --header       Skip csv header
   --help             Help

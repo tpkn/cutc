@@ -10,9 +10,11 @@ import (
 )
 
 func Test_Run(t *testing.T) {
-	var mock_reader *strings.Reader
-	var mock_writer *bufio.Writer
-	var writer_buffer bytes.Buffer
+	var (
+		mock_reader   *strings.Reader
+		mock_writer   *bufio.Writer
+		writer_buffer bytes.Buffer
+	)
 
 	options := Args{FieldsList: "1,4", Delimiter: ",", SkipHeader: false}
 	mock_reader = strings.NewReader("column1,column2,column3")
@@ -63,6 +65,16 @@ func Test_Run(t *testing.T) {
 			args: Args{FieldsList: "-2,1,3", Delimiter: ",", SkipHeader: false},
 			data: "column1,column2,column3",
 			want: "column1,column2,column1,column3",
+		},
+		{
+			args: Args{FieldsList: "1,2,3", Delimiter: ",", SkipHeader: false},
+			data: "header1,header2,header3\ncolumn1,column2,column3",
+			want: "header1,header2,header3\ncolumn1,column2,column3",
+		},
+		{
+			args: Args{FieldsList: "1,2,3", Delimiter: ",", SkipHeader: true},
+			data: "header1,header2,header3\ncolumn1,column2,column3",
+			want: "column1,column2,column3",
 		},
 	}
 
@@ -160,5 +172,4 @@ func Test_ParseFields(t *testing.T) {
 	got, err = ParseFields("1, 2, 3, 62-64, -5, 99-, 95", 100)
 	require.NoError(t, err)
 	require.Equal(t, []int{1, 2, 3, 62, 63, 64, 1, 2, 3, 4, 5, 99, 100, 95}, got)
-
 }
