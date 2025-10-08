@@ -3,6 +3,7 @@ package cutc
 import (
 	"bufio"
 	"bytes"
+	"os"
 	"strings"
 	"testing"
 
@@ -172,4 +173,34 @@ func Test_ParseFields(t *testing.T) {
 	got, err = ParseFields("1, 2, 3, 62-64, -5, 99-, 95", 100)
 	require.NoError(t, err)
 	require.Equal(t, []int{1, 2, 3, 62, 63, 64, 1, 2, 3, 4, 5, 99, 100, 95}, got)
+}
+
+func Benchmark_Run(b *testing.B) {
+	var (
+		mock_reader   *strings.Reader
+		mock_writer   *bufio.Writer
+		writer_buffer bytes.Buffer
+	)
+
+	// 10MB test data, 39k lines, 12 columns
+	// Benchmark_Run           10000000               292.4 ns/op          4199 B/op               2 allocs/op
+	// Benchmark_Run-2         10000000               347.9 ns/op          4199 B/op               2 allocs/op
+	// Benchmark_Run-4         10000000               384.8 ns/op          4199 B/op               2 allocs/op
+	// Benchmark_Run-8         10000000               395.1 ns/op          4199 B/op               2 allocs/op
+	// Benchmark_Run-10        10000000               410.0 ns/op          4199 B/op               2 allocs/op
+	// Benchmark_Run-12        10000000               385.9 ns/op          4199 B/op               2 allocs/op
+	content, err := os.ReadFile("./../_/data.csv")
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	mock_reader = strings.NewReader(string(content))
+	mock_writer = bufio.NewWriter(&writer_buffer)
+
+	for i := 0; i < b.N; i++ {
+		err = Run(mock_reader, mock_writer, Args{FieldsList: "1-3,5,10-", Delimiter: ",", SkipHeader: true})
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
 }
