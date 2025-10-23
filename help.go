@@ -29,12 +29,15 @@ Examples:
   # Cut columns 1, 4 and 7, but print them in a specific order - 4,1,7
   cutc -f 4,1,7 < input.csv
 
+  # Cut columns 1, 2 and 3 and skip header row
+  cutc -f 1,2,3 -h < input.csv
+
   # Cut and gzip
   cutc -f 1,4,7 < input.csv | gzip -c > output.csv.gz
 
   # Duplicate fields 1 and 7 multiple times
   cutc -f 4,1,1,7,7 < input.csv
 
-  # Going a little crazy... and get fields: 1,2,3,62,63,64,1,2,3,4,5,99,100,95
+  # Slice and dice... to get fields: 1,2,3,62,63,64,1,2,3,4,5,99,100,95
   cutc -f 1,2,3,62-64,-5,99-,95 < input.csv
 `
