@@ -17,6 +17,7 @@ cutc [ -options ] < <file.csv>
 -d, --delimiter    Fields delimiter (default: comma)
 -f, --fields       Fields indexes to cut (starting from 1; could be a ranges; order matters)
 -h, --header       Skip csv header
+-t, --trim         Remove spaces, tabs and new line chars from the beginnig and end of the each field
 --help             Help
 --version          Version
 ```

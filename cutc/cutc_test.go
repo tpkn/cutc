@@ -77,6 +77,11 @@ func Test_Run(t *testing.T) {
 			data: "header1,header2,header3\ncolumn1,column2,column3",
 			want: "column1,column2,column3",
 		},
+		{
+			args: Args{FieldsList: "1,2,3", Delimiter: ",", SkipHeader: false, TrimFields: true},
+			data: "   column1 	,column2,   column3			\ncolumn1 \t,column2,   column3\t",
+			want: "column1,column2,column3\ncolumn1,column2,column3",
+		},
 	}
 
 	for _, tt := range tests {
