@@ -13,7 +13,6 @@ import (
 
 func Run(input io.Reader, output io.Writer, options Args) error {
 	var (
-		trim_pattern = regexp.MustCompile(`^[\n\r\t\s]+|[\n\r\t\s]+$`)
 		delimiter, _ = utf8.DecodeRuneInString(options.Delimiter)
 		fields       []int
 		err          error
@@ -57,11 +56,13 @@ func Run(input io.Reader, output io.Writer, options Args) error {
 
 		var row []string
 		for _, f := range fields {
+			field := line[f-1]
+
 			if options.TrimFields {
-				row = append(row, trim_pattern.ReplaceAllString(line[f-1], ""))
-			} else {
-				row = append(row, line[f-1])
+				field = strings.TrimSpace(field)
 			}
+
+			row = append(row, field)
 		}
 
 		err = writer.Write(row)

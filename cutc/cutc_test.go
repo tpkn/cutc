@@ -79,7 +79,7 @@ func Test_Run(t *testing.T) {
 		},
 		{
 			args: Args{FieldsList: "1,2,3", Delimiter: ",", SkipHeader: false, TrimFields: true},
-			data: "   column1 	,column2,   column3			\ncolumn1 \t,column2,   column3\t",
+			data: "   column1 	,column2,   column3	\r		\ncolumn1 \t,column2,   column3\t",
 			want: "column1,column2,column3\ncolumn1,column2,column3",
 		},
 	}
@@ -204,6 +204,37 @@ func Benchmark_Run(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		err = Run(mock_reader, mock_writer, Args{FieldsList: "1-3,5,10-", Delimiter: ",", SkipHeader: true})
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+func Benchmark_RunTrim(b *testing.B) {
+	var (
+		mock_reader   *strings.Reader
+		mock_writer   *bufio.Writer
+		writer_buffer bytes.Buffer
+	)
+
+	// 10MB test data, 39k lines, 12 columns
+	// Benchmark_RunTrim
+	// Benchmark_RunTrim               10000000               260.4 ns/op          4196 B/op          2 allocs/op
+	// Benchmark_RunTrim-2             10000000               509.1 ns/op          4196 B/op          2 allocs/op
+	// Benchmark_RunTrim-4             10000000               491.1 ns/op          4196 B/op          2 allocs/op
+	// Benchmark_RunTrim-8             10000000               499.3 ns/op          4196 B/op          2 allocs/op
+	// Benchmark_RunTrim-10            10000000               511.5 ns/op          4196 B/op          2 allocs/op
+	// Benchmark_RunTrim-12            10000000               509.1 ns/op          4196 B/op          2 allocs/op
+	content, err := os.ReadFile("./../_/data_non_trimmed.csv")
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	mock_reader = strings.NewReader(string(content))
+	mock_writer = bufio.NewWriter(&writer_buffer)
+
+	for i := 0; i < b.N; i++ {
+		err = Run(mock_reader, mock_writer, Args{FieldsList: "1-3,5,10-", Delimiter: ",", SkipHeader: true, TrimFields: true})
 		if err != nil {
 			b.Fatal(err)
 		}
