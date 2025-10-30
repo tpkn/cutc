@@ -18,7 +18,7 @@ func main() {
 	flag.StringVar(&args.Delimiter, "d", ",", "Fields delimiter")
 	flag.StringVar(&args.FieldsList, "f", "", "Fields indexes to cut (starting from 1, order matters)")
 	flag.BoolVar(&args.SkipHeader, "h", false, "Skip csv header")
-	flag.BoolVar(&args.TrimFields, "t", false, "Remove spaces, tabs and new line chars from the beginnig and end of the each field")
+	flag.BoolVar(&args.TrimFields, "t", false, "Remove spaces and tabs from the beginnig and end of the each field")
 	flag.StringVar(&args.Delimiter, "delimiter", ",", "Alias for -d")
 	flag.StringVar(&args.FieldsList, "fields", "", "Alias for -f")
 	flag.BoolVar(&args.SkipHeader, "header", false, "Alias for -h")
