@@ -26,37 +26,46 @@ cutc [ -options ] < <file.csv>
 
 Cut columns 1 and 4
 
-```shell
+```bash
 cutc -f 1,4 < input.csv
 ```
 
 Cut columns 1, 2 and 3 and skip header row
 
-```shell
+```bash
 cutc -f 1,2,3 -h < input.csv
 ```
 
 Cut columns 1, 4 and 7, but print them in a specific order - `4,1,7`
 
-```shell
+```bash
 cutc -f 4,1,7 < input.csv
 ```
 
 Cut and gzip
 
-```shell
+```bash
 cutc -f 1,4,7 < input.csv | gzip -c > output.csv.gz
+```
+
+Cut columns of gzipped csv into a separate files
+
+```bash
+gunzip -c input.csv.gz | \
+tee >(cutc -f 1 > output_1.csv) \
+    >(cutc -f 5 > output_5.csv) \
+    >(cutc -f 7 > output_7.csv) > /dev/null
 ```
 
 Duplicate fields 1 and 7 multiple times
 
-```shell
+```bash
 cutc -f 4,1,1,7,7 < input.csv
 ```
 
 Slice and dice... to get fields: `1,2,3,62,63,64,1,2,3,4,5,99,100,95`
 
-```shell
+```bash
 cutc -f 1,2,3,62-64,-5,99-,95 < input.csv
 ```
 

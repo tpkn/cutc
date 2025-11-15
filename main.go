@@ -25,6 +25,7 @@ func main() {
 	flag.BoolVar(&args.TrimFields, "trim", false, "Alias for -t")
 	flag.BoolVar(&args.Help, "help", false, "Help")
 	flag.BoolVar(&args.Version, "version", false, "Version")
+	flag.Usage = func() {}
 	flag.Parse()
 
 	log.SetFlags(0)

@@ -36,6 +36,9 @@ Examples:
   # Cut and gzip
   cutc -f 1,4,7 < input.csv | gzip -c > output.csv.gz
 
+  # Cut columns of gzipped csv into a separate files
+  gunzip -c input.csv.gz | tee >(cutc -f 1 > output_1.csv) >(cutc -f 5 > output_5.csv) >(cutc -f 7 > output_7.csv) > /dev/null
+
   # Duplicate fields 1 and 7 multiple times
   cutc -f 4,1,1,7,7 < input.csv
 
