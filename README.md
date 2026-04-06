@@ -5,6 +5,12 @@
    It <code>cuts</code>, <code>duplicates</code> and <code>rearranges</code> fields in a csv file.
 </p>
 
+## Install
+
+```shell
+curl --silent -L https://raw.githubusercontent.com/tpkn/cutc/main/install.sh | sudo bash
+```
+
 ## Usage
 
 ```
