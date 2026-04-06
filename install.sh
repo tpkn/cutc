@@ -8,7 +8,12 @@ binary_name=$(cut -d '/' -f 9 <<< "$release_url")
 binary_path="/usr/local/bin/$binary_name"
 binary_path_alt="/usr/bin/$binary_name"
 
-sudo -v &> /dev/null && echo "Downloading: $release_url ..." || (echo "[x] You are not a sudo user" && exit 1)
+if sudo -v &> /dev/null; then
+	echo "Downloading: $release_url ..."
+}else{
+	echo "[x] You are not a sudo user"
+	exit 1
+}
 
 # Check if there is a '/usr/local/bin' in $PATH
 if ! grep -q '/usr/local/bin/' <<< "$PATH"; then
