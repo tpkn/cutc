@@ -10,10 +10,10 @@ binary_path_alt="/usr/bin/$binary_name"
 
 if sudo -v &> /dev/null; then
 	echo "Downloading: $release_url ..."
-}else{
+else
 	echo "[x] You are not a sudo user"
 	exit 1
-}
+fi
 
 # Check if there is a '/usr/local/bin' in $PATH
 if ! grep -q '/usr/local/bin/' <<< "$PATH"; then
