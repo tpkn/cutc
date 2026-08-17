@@ -17,7 +17,7 @@ function main {
 	fi
 
 	# Check if there is a '/usr/local/bin' in $PATH
-	if ! grep -q '/usr/local/bin/' <<< "$PATH"; then
+	if ! grep -q '/usr/local/bin' <<< "$PATH"; then
 		binary_path=$binary_path_alt
 		echo "[-] There is no '/usr/local/bin' path in '$PATH'"
 		echo "[✓] Installing into '/usr/bin'"
